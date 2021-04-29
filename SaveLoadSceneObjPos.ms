@@ -264,23 +264,30 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 	local posCopyItemList = #()
 	local LoadPosNames = #()
 	local save_text_pre = "저정된 해당 오브젝트 : "
-	button reset_btn "Data Reset" tooltip:"저장된 정보를 삭제"
-	label file_name "저장파일명" style_sunkenedge:true tooltip:"저장된 파일이름"
-	label save_text "0 개 저장중"
-	label log_text "대기중..."
-	label aaa  "ㅁ----------------------ㅁ"
-	edittext saveName text:"저장할 포즈명"
-	button save_btn "Save Pos"
-	label bbb  "ㅁ----------------------ㅁ"
-	dropdownlist loadPosList item:LoadPosNames
-	checkbox olnyrot_ck "Olny Rotation"
-	button load_btn "Load Pos" tooltip:"원본 본만 적용"
-	button loadByName_btn "Load pos By Name" tooltip:"해당 이름대로 복사."
-	button loadHierarchy_btn "Load by Hierarchy" tooltip:"계층구조로 대로 복사한다."
-	button mirrorX_btn "Mirror X" tooltip:"계층구조로 대로 복사한다."
+
+	button reset_btn 			"Data Reset" 		tooltip:"저장된 정보를 삭제" width:150
+	label log_text                    "대기중..."
+	label aaa  				"ㅁ----------------------ㅁ"
+	edittext saveName          text:"저장할 포즈명" 	height:25
+	button save_btn 	 			"Save Pos" 			width:150
+	label bbb  			 	"ㅁ----------------------ㅁ"
+	label save_text                 "0 개 저장중"
+	dropdownlist loadPosList       item:LoadPosNames
+	checkbox olnyrot_ck           "Olny Rotation"
+	button load_btn 		 		"Load Pos"			 width:150 tooltip:"원본 본만 적용"
+	button loadByName_btn    		"Load pos By Name"   width:150 tooltip:"해당 이름대로 복사."
+	button loadHierarchy_btn 		"Load by Hierarchy"  width:150 tooltip:"계층구조로 대로 복사한다."
+	button mirrorX_btn       		"Mirror X"			 width:150 tooltip:"본미러와 바이패드에 사용"
 	
-	fn getSaveText arg_int = (
-		return_str = save_text_pre + (arg_int as string) + "개"
+	fn getSaveText arg_tm_list = (
+		root = arg_tm_list[1]
+		if root == undefined do return (save_text.text "저장된정보가 없습니다.")
+		save_text.text = root.name + "와 " + (arg_tm_list.count as string) + "개 위치값"
+	)
+	on loadPosList selected index do(
+		if index == 0 do return log_text.text ="불러올 목록을 선택하세요."
+		tm_list = posCopyItemList[index].tmList
+		getSaveText tm_list
 	)
 	on save_btn pressed do (
 		undo on(
@@ -299,11 +306,13 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 		)
 		LoadPosNames = #()
 		for item in posCopyItemList do (
-			append LoadPosNames item.text
+		append LoadPosNames ((LoadPosNames.count as string) + ": " + item.text) 
 		)
 		loadPosList.items  = LoadPosNames
 		save_text.text = save_text_pre + save_num_string + "개"
-		file_name.text = maxfilename
+		if LoadPosNames.count > 1 do(
+			loadPosList.selection = LoadPosNames.count
+		)
 		)
 	)
 	on load_btn pressed do (
@@ -312,7 +321,7 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 		index = loadPosList.selection
 		if index == 0 do return log_text.text ="불러올 목록을 선택하세요."
 		tm_list = posCopyItemList[index].tmList
-		save_text.text = getSaveText tm_list.count
+		getSaveText tm_list
 		LoadScenePos tm_list olnyRot:olnyrot_ck.state
 		if tm_list.count == 0 then log_text.text ="저장된 포즈정보가 없습니다."
 		else log_text.text ="불러오기 완료"
@@ -323,7 +332,7 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 		index = loadPosList.selection
 		if index == 0 do return log_text.text ="불러올 목록을 선택하세요."
 		tm_list = posCopyItemList[index].tmList
-		save_text.text = getSaveText tm_list.count
+		getSaveText tm_list
 		if tm_list.count == 0 do (
 			return (log_text.text = "저장된 포즈정보가 없습니다.")
 		)
@@ -336,7 +345,7 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 		index = loadPosList.selection
 		if index == 0 do return log_text.text ="불러올 목록을 선택하세요."
 		tm_list = posCopyItemList[index].tmList
-		save_text.text = getSaveText tm_list.count
+		getSaveText tm_list
 		text_dummy =  LoadPosByHierarchy tm_list olnyRot:olnyrot_ck.state
 		log_text.text = text_dummy
 		)
@@ -346,7 +355,7 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 		index = loadPosList.selection
 		if index == 0 do return log_text.text ="불러올 목록을 선택하세요."
 		tm_list = posCopyItemList[index].tmList
-		save_text.text = getSaveText tm_list.count
+		getSaveText tm_list
 		SetMirrorNodes tm_list olnyRot:olnyrot_ck.state
 		log_text.text = "값 x축 미러로 적용완료"
 		)
@@ -357,7 +366,7 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 		posCopyItemList = #()
 		loadPosList.items  = LoadPosNames
 		log_text.text = "저장된 정보를 삭제함."
-		save_text.text = getSaveText tm_list.count
+		getSaveText tm_list
 	)
 )
-createdialog SaveLoadObjPos 180 300 style:#(#style_titlebar, #style_resizing, #style_sysmenu)
+createdialog SaveLoadObjPos 180 320 style:#(#style_titlebar, #style_resizing, #style_sysmenu)
