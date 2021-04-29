@@ -1,0 +1,9 @@
+name "SaveLoadSceneObjPos"
+version 202104291
+
+extract to "$Temp"
+
+drop "installer.ms"
+run "installer.ms"
+
+clear temp on reset 
