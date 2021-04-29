@@ -56,6 +56,35 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 			)
 			new_tm
 		)
+		fn GetHierarchyNodes arg_nodes = (
+			root_nodes = #()
+			for obj in arg_nodes do (
+				isRoot = false 
+				if obj.parent == undefined then isRoot = true 
+					else(
+						p_node = obj.parent
+						isRoot = true
+						for select_node in arg_nodes do ( 
+							if p_node == select_node do isRoot = false
+						)
+					)
+				if isRoot do append root_nodes obj
+			)
+			new_sort_nodes = #()
+			for obj in root_nodes do (
+				sort_list = #()
+				sort_list  = for n in obj collect  n
+				for sub_node in sort_list do(
+					-- 대상 노드만 포함
+					isSelectionNode = false
+					for t_node in arg_nodes do (
+						if sub_node == t_node do isSelectionNode = true
+					)
+					if isSelectionNode do append new_sort_nodes sub_node
+				)
+			)
+			new_sort_nodes
+		)
 		fn mirror_fn arg_ndoe = (
 			nodes = #()
 			for obj in arg_ndoe do (
@@ -132,35 +161,6 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 			)
 			delete mirror_nodes
 			redrawViews()
-		)
-		fn GetHierarchyNodes arg_nodes = (
-			root_nodes = #()
-			for obj in arg_nodes do (
-				isRoot = false 
-				if obj.parent == undefined then isRoot = true 
-					else(
-						p_node = obj.parent
-						isRoot = true
-						for select_node in arg_nodes do ( 
-							if p_node == select_node do isRoot = false
-						)
-					)
-				if isRoot do append root_nodes obj
-			)
-			new_sort_nodes = #()
-			for obj in root_nodes do (
-				sort_list = #()
-				sort_list  = for n in obj collect  n
-				for sub_node in sort_list do(
-					-- 대상 노드만 포함
-					isSelectionNode = false
-					for t_node in arg_nodes do (
-						if sub_node == t_node do isSelectionNode = true
-					)
-					if isSelectionNode do append new_sort_nodes sub_node
-				)
-			)
-			new_sort_nodes
 		)
 		fn getSaveText arg_tm_list = (
 			root = arg_tm_list[1]
