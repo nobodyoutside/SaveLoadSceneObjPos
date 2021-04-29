@@ -107,7 +107,7 @@ fn SetMirrorNodes tm_list_arg olnyRot:false = (
 			obj.transform = new_tm
 		)
 	)
-	-- delete mirror_nodes
+	delete mirror_nodes
 	redrawViews()
 )
 fn GetHierarchyNodes arg_nodes = (
