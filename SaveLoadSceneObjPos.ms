@@ -164,7 +164,7 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 		)
 		fn getSaveText arg_tm_list = (
 			root = arg_tm_list[1]
-			if root == undefined do return (save_text.text "저장된정보가 없습니다.")
+			if root == undefined do return (save_text.text = "저장된정보가 없습니다.")
 			save_text.text = root.name + "와 " + (arg_tm_list.count as string) + "개 위치값"
 		)
 	-- Run Progress 
