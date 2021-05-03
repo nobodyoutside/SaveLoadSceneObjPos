@@ -32,6 +32,7 @@ rollout SaveLoadObjPos "신 포즈 저장 불러오기"
 		button loadByName_btn    		"Load pos By Name"   width:150 tooltip:"해당 이름대로 복사."
 		button loadHierarchy_btn 		"Load by Hierarchy"  width:150 tooltip:"계층구조로 대로 복사한다."
 		button mirrorX_btn       		"Mirror X"			 width:150 tooltip:"본미러와 바이패드에 사용"
+		hyperLink helpme "Help Me" address:"https://docs.google.com/forms/d/e/1FAIpQLSfFAJoIrNtoDgRSDa5DQZvL93Wvpk-LKy564vD39v2o8J2mWg/viewform?usp=sf_link"
 
 	-- 함수 #regen
 		fn LogTm name tm = (
